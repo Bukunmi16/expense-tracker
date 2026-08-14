@@ -7,7 +7,7 @@ dotenv.config()
 
 const app = express()
 
-const PORT = 5000
+
 
 app.use(express.json())
 
@@ -15,7 +15,7 @@ app.use('/api/transactions', transactionRoutes)
 
 
 connectDB().then(() => {
-    app.listen(PORT, () => { 
-        console.log(`Server running on PORT ${PORT}`);    
+    app.listen(3000, () => { 
+        console.log(`Server running on PORT ${3000}`);    
     })
 })
