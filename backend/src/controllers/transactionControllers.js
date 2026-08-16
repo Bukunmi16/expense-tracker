@@ -1,11 +1,52 @@
 import Transaction from '../models/TransactionModel.js'
 
+export const getTransactionSummary = async (req, res) => {
+    try {
+        const incomeTransactions = await Transaction.find({type: "income"})
+        
+        const totalIncome = incomeTransactions.reduce(
+            (total, transaction) => total + transaction.amount, 0);
+        console.log(totalIncome)
+
+        const expenseTransactions = await Transaction.find({type: "expense"})
+        
+        const totalExpense = expenseTransactions.reduce(
+            (total, transaction) => total + transaction.amount, 0);
+        console.log(totalExpense)
+
+        res.json({
+            totalIncome: totalIncome,
+            totalExpense: totalExpense,
+            balance: totalIncome - totalExpense
+        })
+    
+    } catch (error) {
+        res.status(400).json({message: 'Error getting transaction summary', error})
+    }
+}
+
 export const getAllTransactions = async (req, res) => {
     try {
-        const transactions = await Transaction.find().sort({ createdAt: -1})
-        res.status(200).json(transactions)
+        const {page = 1, limit = 5} = req.query
+        const limitNum = Number(limit) //query parameter not a route parameter
+        const pageNum = Number(page)
+        const skipNum = (pageNum - 1) * limitNum
+
+        const transactions = await Transaction.find().skip(skipNum).limit(limitNum).sort({ createdAt: -1})
+        
+        // Counting Documents, Total Pages etc.
+
+        const total = await Transaction.countDocuments()
+        const totalPages = Math.ceil(total/limitNum)
+        
+        res.status(200).json({
+            transactions,
+            page: pageNum,
+            limit: limitNum,
+            total,
+            totalPages
+        })
         console.log(transactions)
-        console.log(req.query)
     } catch (error) {
         res.status(400).json({message: 'Error fetching all transactions', error})
     }
@@ -24,7 +65,11 @@ export const searchTransaction = async (req, res) => {
 export const createTransaction = async (req, res) => {
     try {
         const {description, amount, type, category} = req.body
-        const transaction = new Transaction({description, amount, type, category})
+        const transaction = new Transaction({
+            description: description.toLowerCase(), 
+            amount, 
+            type: type.toLowerCase(),
+            category: category.toLowerCase()})
         const savedTransaction = await transaction.save();
         res.status(201).json(savedTransaction)
 

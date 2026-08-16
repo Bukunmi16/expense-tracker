@@ -16,6 +16,7 @@
     "start": "node src/server.js"
   },
   "keywords": [],
+  "name": "backend",
   "author": "",
   "license": "ISC",
   "description": "",
