@@ -1,14 +1,15 @@
 import Transaction from '../models/TransactionModel.js'
+import { protect } from '../middleware/authMiddleware.js';
 
 export const getTransactionSummary = async (req, res) => {
     try {
-        const incomeTransactions = await Transaction.find({type: "income"})
+        const incomeTransactions = await Transaction.find({user: req.user._id, type: "income"})
         
         const totalIncome = incomeTransactions.reduce(
             (total, transaction) => total + transaction.amount, 0);
         console.log(totalIncome)
 
-        const expenseTransactions = await Transaction.find({type: "expense"})
+        const expenseTransactions = await Transaction.find({user: req.user._id, type: "expense"})
         
         const totalExpense = expenseTransactions.reduce(
             (total, transaction) => total + transaction.amount, 0);
@@ -32,11 +33,11 @@ export const getAllTransactions = async (req, res) => {
         const pageNum = Number(page)
         const skipNum = (pageNum - 1) * limitNum
 
-        const transactions = await Transaction.find().skip(skipNum).limit(limitNum).sort({ createdAt: -1})
+        const transactions = await Transaction.find({user: req.user._id}).skip(skipNum).limit(limitNum).sort({ createdAt: -1})
         
         // Counting Documents, Total Pages etc.
 
-        const total = await Transaction.countDocuments()
+        const total = await Transaction.countDocuments({user: req.user._id})
         const totalPages = Math.ceil(total/limitNum)
         
         res.status(200).json({
@@ -46,17 +47,18 @@ export const getAllTransactions = async (req, res) => {
             total,
             totalPages
         })
-        console.log(transactions)
+        // console.log(transactions)
     } catch (error) {
         res.status(400).json({message: 'Error fetching all transactions', error})
     }
 }
 export const searchTransaction = async (req, res) => {
     try {
-        const {id} = req.params
-        console.log(id);
-        const transaction = await Transaction.findById(id);
-        res.status(200).json(transaction ? transaction : {message : 'Transaction Not Found'})
+        const transaction = await Transaction.findOne({user: req.user._id, id: req.params._id});
+        res.status(200).json({
+            message: 'Found Transaction',
+            transaction
+        })
     } catch (error) {
         res.status(400).json({message: 'Error searching for transaction', error})
     }
@@ -65,13 +67,15 @@ export const searchTransaction = async (req, res) => {
 export const createTransaction = async (req, res) => {
     try {
         const {description, amount, type, category} = req.body
-        const transaction = new Transaction({
-            description: description.toLowerCase(), 
+        const transaction = await Transaction.create({
+            description, 
             amount, 
             type: type.toLowerCase(),
-            category: category.toLowerCase()})
-        const savedTransaction = await transaction.save();
-        res.status(201).json(savedTransaction)
+            category: category.toLowerCase(),
+            user: req.user._id
+        })
+
+            res.status(201).json(transaction)
 
     } catch (error) {
         console.log(error);
@@ -82,27 +86,44 @@ export const createTransaction = async (req, res) => {
 export const updateTransaction = async (req, res) => {
     try {
         const {description, amount, type, category} = req.body
-        const updatedTransaction = await Transaction.findByIdAndUpdate(req.param.id, {description, amount, type, category}, {new: true})
+        const transaction = await Transaction.findOne({user: req.user._id, _id:req.params.id})
         
-        if(!updatedTransaction) return res.status(404).json({message : 'Error Updating Transaction'})
+        if(!transaction) return res.status(404).json({message : 'Cannot Find Transaction'})
+            
+            transaction.description = description 
+            transaction.amount = amount
+            transaction.type =  type.toLowerCase(),
+            transaction.category = category.toLowerCase()
+
+            await transaction.save()
         
-        res.status(200).json(updateTransaction, {message: 'Transaction Updated Successfully'})
+
+        res.status(200).json(
+            {
+            message: 'Transaction Updated Successfully',
+            transaction: transaction 
+            },
+        )
         
     } catch (error) {
-        
+        res.status(400).json({message: 'Failed to Delete Transaction'})
+        console.log(error);
     }
 }
 
 export const deleteTransaction = async (req, res) => {
     try {
         const {id} = req.params
-        const deletedTransaction = await Transaction.findByIdAndDelete(id)
+        const transaction = await Transaction.findOne({user: req.user._id, _id:req.params.id})
+
+        if(!transaction) return res.status(404).json({message : 'Cannot find Transaction'})
         
-        if(!deletedTransaction) return res.status(404).json({message : 'Error Deleting Transaction'})
-        
-        res.status(200).json(deletedTransaction, {message : "Transaction Deleted Successfully"})
+            await transaction.deleteOne()
+
+        res.status(200).json({message : "Transaction Deleted Successfully"})
         
     } catch (error) {
-        
+        res.status(400).json({message: 'Failed to Delete Transaction'})
+        console.log(error);        
     }
 }

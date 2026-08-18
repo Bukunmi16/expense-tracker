@@ -76,7 +76,7 @@ function CardAction({
   );
 }
 
-function CardContent({
+function  CardContent({
   className,
   ...props
 }) {

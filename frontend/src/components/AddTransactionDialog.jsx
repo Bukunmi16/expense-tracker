@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -21,9 +21,24 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon } from 'lucide-react';
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { api } from '@/lib/utils';
+import { useNavigate } from 'react-router';
+import { toast } from 'sonner';
 
-const AddTransactionDialog = () => {
+
+const AddTransactionDialog = ({onTransactionAdded, refreshSummary, transaction, capitalize, resetTransaction, open, setOpen }) => {
     
+    const navigate = useNavigate()
+
+    const [loading, setLoading] = useState(false)
+
+    const [initialFormData, setiInitialFormData] = useState({
+        description: "",
+        amount: "",
+        type: "",
+        category: ""
+    })
+
     const [formData, setFormData] = useState({
         description: "",
         amount: "",
@@ -39,34 +54,89 @@ const AddTransactionDialog = () => {
         }))
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
-        console.log(formData);
+
+        if(!formData.category.trim() || !formData.amount || formData.amount < 0 || !formData.description.trim() || !formData.type.trim() ){
+            toast.warning('Kindly fill out all fields. Thank you!')
+        }
+
+        setLoading(true)
+
+        try {
+            
+            if (transaction) {
+             await api.put(`/transactions/${transaction._id}`, {
+            ...formData, 
+            amount: Number(formData.amount),
+         })   
+        } else{    
+            await api.post('/transactions', {
+                ...formData, 
+                amount: Number(formData.amount),
+            }) 
+        }
+        setFormData(initialFormData)
+        setOpen(false)
+        resetTransaction()
+         toast.success(`Transaction ${transaction ? 'Updated' : 'Saved'} Successfully`)
+         onTransactionAdded()
+         refreshSummary()
+        } catch (error) {
+            toast.error(`Failed to ${transaction ? 'Update' : 'Save'} Transaction`)
+          console.log('error');
+        } finally {
+            setLoading(false)
+        }
     }
 
     // console.log(formData);
+    // Update Form Data for Update
+
+    useEffect(() => {
+        if(transaction) {
+            setFormData({
+                description: transaction.description,
+                amount: transaction.amount,
+                type: transaction.type,
+                category: transaction.category
+            })
+            setOpen(true)
+        }
+    }, [transaction])
     
 
+
     return (
-    <div>
-        <Dialog>
+    <div >
+        <Dialog open={open} onOpenChange={
+            (value) => {
+                setOpen(value)
+                setFormData(initialFormData)
+                if (!value && transaction) {
+                    resetTransaction()
+                }
+            }
+        }>
             <DialogTrigger asChild>
               <Button>
-                 <PlusIcon/> Add Transaction
+                 <PlusIcon/> <p className='hidden md:block'> Add Transaction</p>
                 </Button>
             </DialogTrigger>
 
             <DialogContent>
                 <DialogHeader>
-                    <DialogTitle>Add a Transaction</DialogTitle>
+                    <DialogTitle>{transaction ? 'Edit Transaction': 'Add a Transaction'}</DialogTitle>
                     <DialogDescription>
-                    Add a new Income or Expense to your Account
+                    {
+                    transaction ? "Edit your account transaction" : "Add a new Income or Expense to your Account"
+                    }
                     </DialogDescription>
                 </DialogHeader>
     <form onSubmit={handleSubmit}>
 
-    <div className='mb-5'>
-    <div className='my-5'>
+    <div className='mb-5 '>
+    <div className='mb-5  '>
         <Label className='mb-2' htmlFor="description">Description</Label>
         <Input
         id="description"
@@ -91,7 +161,7 @@ const AddTransactionDialog = () => {
     <div className='my-5'>
         <Label className={"mb-2"}>Transaction Type</Label>
         <Select  
-        value={formData.type}
+        value={capitalize(formData.type)}
         onValueChange={ (value) => (
                 setFormData((prev) => ({
                     ...prev, 
@@ -113,7 +183,7 @@ const AddTransactionDialog = () => {
     <div >
         <Label className={"mb-2"}>Category</Label>
         <Select  
-        value={formData.category}
+        value={capitalize(formData.category)}
         onValueChange={ (value) => (
                 setFormData((prev) => ({
                     ...prev, 
@@ -153,7 +223,7 @@ const AddTransactionDialog = () => {
 </Select>
     </div>
 
-      <Button className={'mt-5 w-full'} type="submit">Add Transaction</Button>
+      <Button disabled={loading} className={'mt-5 w-full'} type="submit">{loading ? `${transaction ? 'Updating' : 'Adding'} your Transaction...` : `${transaction ? 'Update' : 'Add'} your Transaction`}</Button>
     </div>
           </form>
         </DialogContent>

@@ -5,6 +5,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+.no-hover-effect:hover {
+  background-color: inherit !important;
+}
+
 @theme inline {
     --font-heading: var(--font-sans);
     --font-sans: 'Inter Variable', sans-serif;
