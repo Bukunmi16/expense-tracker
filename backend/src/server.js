@@ -17,9 +17,8 @@ const app = express()
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://expense-tracker-1-8csp.onrender.com',
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization"],
 }))
 
 app.use('/api/transactions', transactionRoutes)
