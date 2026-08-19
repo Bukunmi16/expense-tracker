@@ -95,7 +95,7 @@ const Dashboard = () => {
   }, [page])
 
   return (
-    <main className='flex flex-col'>
+    <main className='flex flex-col max-w-7xl'>
         <div className='p-3 md:p-6 shadow w-full mx-auto flex justify-between items-center '>
         <div className='flex gap-3 items-center'>
         <div className='font-bold text-md sm:text-3xl hidden md:block'>Expense Tracker</div>

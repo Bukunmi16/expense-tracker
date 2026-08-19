@@ -9,7 +9,7 @@ const SummaryCards = ({summary, loadingSummary}) => {
 
 
   return (
-        <div className='max-w-6xl mx-auto'>     
+        <div className='max-w-6xl mx-auto w-full'>     
     <div className='grid gap-5 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 m-7'>
     <Card className={'cursor-pointer border-none hover:shadow-xl transition duration-300'}>
     <CardHeader className={"font-bold text-xl"}> 
