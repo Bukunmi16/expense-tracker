@@ -16,12 +16,17 @@
 
 //   return <Outlet />;
 // };
-
-// export default GuestRoute;
-import { Navigate, Outlet } from "react-router";
+import { Outlet } from "react-router";
+import { useAuth } from "../context/AuthContext";
 
 const GuestRoute = () => {
-  return <div style={{ color: "black" }}>GuestRoute is working</div>;
+  const { loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return <Outlet />;
 };
 
 export default GuestRoute;
