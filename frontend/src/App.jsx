@@ -11,6 +11,7 @@ const App = () => {
     <div>
       <Toaster position='top-center'/>
       <Routes>
+        <Route path="/" element={<Navigate to="/signin" replace />} />
         <Route element={<GuestRoute/>}>
               <Route path='/signin' element={<AuthPage/>} />
         </Route>
