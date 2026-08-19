@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser'
 import transactionRoutes from './routes/transactionRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 
+const PORT = process.env.PORT || 3000;
 
 dotenv.config()
 const __filename = fileURLToPath(import.meta.url);
@@ -40,7 +41,7 @@ app.use((req, res, next) => {
 });
 
 connectDB().then(() => {
-    app.listen(3000, () => { 
-        console.log(`Server running on PORT ${3000}`);    
+    app.listen(PORT, () => { 
+        console.log(`Server running on PORT ${PORT}`);    
     })
 })
