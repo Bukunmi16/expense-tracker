@@ -7,7 +7,6 @@ export const protect = async (req, res, next) => {
         const token = req.cookies.token
 
         // console.log('TOKEN:', token);
-        
 
         if (!token) {
             res.status(400).json({
@@ -23,7 +22,7 @@ export const protect = async (req, res, next) => {
         const user = await User.findById(decoded.userId).select('-password')
 
         if(!user) {
-            res.status(401).json({
+           return res.status(401).json({
                 message: 'User not found.'
             })
         }

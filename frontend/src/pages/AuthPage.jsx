@@ -40,7 +40,7 @@ export default function Login ({ onLogin }) {
         navigate('/dashboard');        
     } catch (error) {
         toast.error(`Kindly enter the right credentials`)
-        console.log(error);
+        console.log(error); 
     } finally{ 
          setLoading(false)
         }
