@@ -11,7 +11,7 @@ const GuestRoute = () => {
   }
 
   if (user) {
-    return <>USER EXISTS</>;
+    return <Navigate to="/dashboard" replace />;
   }
 
   return <Outlet />;
