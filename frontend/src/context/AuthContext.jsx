@@ -13,9 +13,9 @@ export const AuthProvider  = ({children}) => {
             setUser(null);
             console.log(user);
             
-          } catch (error) {
+        } catch (error) {
             console.error(error);
-          }
+        }finally {setUser(null)}
         };
 
     useEffect(() => {
