@@ -9,7 +9,7 @@ export const protect = async (req, res, next) => {
         // console.log('TOKEN:', token);
 
         if (!token) {
-            res.status(400).json({
+           return res.status(400).json({
                 message: 'Not authorized, no token'
             })
         }
