@@ -11,10 +11,10 @@ const GuestRoute = () => {
   }
 
   if (user) {
-    return <>USER EXISTS</>
+    return <>USER EXISTS</>;
   }
 
-  return <Outlet />;
+  // return <Outlet />;
 };
 
 export default GuestRoute;
