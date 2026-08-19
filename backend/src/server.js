@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import transactionRoutes from './routes/transactionRoutes.js'
 import authRoutes from './routes/authRoutes.js'
 
+const PORT = process.env.PORT || 3000
 
 dotenv.config()
 
@@ -25,7 +26,7 @@ app.use('/api/auth', authRoutes)
 
 
 connectDB().then(() => {
-    app.listen(3000, () => { 
-        console.log(`Server running on PORT ${3000}`);    
+    app.listen(PORT, () => { 
+        console.log(`Server running on PORT ${PORT}`);    
     })
 })
