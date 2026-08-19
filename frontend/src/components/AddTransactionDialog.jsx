@@ -119,8 +119,8 @@ const AddTransactionDialog = ({onTransactionAdded, refreshSummary, transaction, 
             }
         }>
             <DialogTrigger asChild>
-              <Button>
-                 <PlusIcon/> <p className='hidden md:block'> Add Transaction</p>
+              <Button >
+                 <PlusIcon  /> <p className='hidden md:block'> Add Transaction</p>
                 </Button>
             </DialogTrigger>
 
@@ -208,6 +208,7 @@ const AddTransactionDialog = ({onTransactionAdded, refreshSummary, transaction, 
           <>
           <SelectItem value="Food">Food</SelectItem>
           <SelectItem value="Transport">Transport</SelectItem>
+          <SelectItem value="Church">Church</SelectItem>
           <SelectItem value="Bills">Bills</SelectItem>
           <SelectItem value="Shopping">Shopping</SelectItem>
           <SelectItem value="Entertainment">Entertainment</SelectItem>

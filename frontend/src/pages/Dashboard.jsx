@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
 import SummaryCards from '@/components/SummaryCards'
 import TablesComponent from '@/components/TransactionTableComponent'
 import AddTransactionDialog from '@/components/AddTransactionDialog'
 import { api } from '@/lib/utils'
+import { toast } from 'sonner'
+import { useAuth } from '@/context/AuthContext'
+import { LogOut, User } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const Dashboard = () => {
 
@@ -14,7 +19,23 @@ const Dashboard = () => {
   const [open, setOpen] = useState(false)
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const {logout, user} = useAuth()
+  const navigate = useNavigate()
   
+  const handleLogout = () =>{
+    toast(`Are you sure you want to log out, ${user.name}? 🥺`,
+        {
+          position: 'top-center',
+          action: {
+            label: "Yes",
+            onClick: async () =>{
+                  await logout()
+                  navigate('/signin')    
+            }
+          }
+  })
+  }
+
   const getTransactions = async () => {
     setIsLoadingTransactions(true)
     try {
@@ -76,8 +97,10 @@ const Dashboard = () => {
   return (
     <main>
         <div className='p-3 md:p-6 shadow  mx-auto flex justify-between items-center '>
-        <div className='font-bold text-sm sm:text-3xl'>Expense Tracker</div>
+        <div className='font-bold text-md sm:text-3xl'>Expense Tracker</div>
         
+        <div className='flex gap-2'>
+
         <AddTransactionDialog 
         onTransactionAdded={getTransactions}
         refreshSummary={getSummary}
@@ -87,6 +110,10 @@ const Dashboard = () => {
         open={open} 
         setOpen={setOpen}
         />
+
+      <Button variant="ghost" onClick={handleLogout}><LogOut className="h-4 w-4" /><p className='md:block hidden'>Logout</p></Button>
+        </div>
+
         </div>
         <SummaryCards 
         summary={summary}

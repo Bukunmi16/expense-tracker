@@ -90,3 +90,21 @@ export const login = async (req, res) => {
         })
     }
 } 
+
+export const logout = async (req, res) => { 
+    try {
+    res.cookie("token" , "", {
+        httpOnly: true,
+        expires: new Date(0)
+    })
+
+    res.status(200).json({
+        message: 'Logged Out Successfully'
+    })
+
+    } catch (error) {
+    res.status(400).json({
+        message: 'Error Logging Out'
+    })    
+    }
+}

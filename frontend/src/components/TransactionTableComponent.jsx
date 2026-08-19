@@ -58,11 +58,10 @@ try {
 
     } 
 
-    console.log(totalPages);
     
   return (
 
-    isLoadingTransactions ? (<div className='text-center p-3'>
+    isLoadingTransactions ? (<div className='text-center  p-3'>
         Loading Transactions...
     </div>
     ) :(
@@ -138,7 +137,7 @@ try {
               transaction.type === 'income' ? "text-emerald-600" : "text-rose-600"
             }`}
           >
-            { transaction.type === 'income' ? "+" : "-"}{transaction.amount.toLocaleString()}
+            { transaction.type === 'income' ? "+" : "-"}₦{transaction.amount.toLocaleString()}
           </p>
         </div>
 
