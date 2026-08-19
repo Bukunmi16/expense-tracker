@@ -94,7 +94,7 @@ export default function Login ({ onLogin }) {
         </div>
 
         <Card className="w-full max-w-sm border-slate-200 shadow-sm">
-          <CardContent className="p-3 sm:p-8">
+          <CardContent className="p-6 sm:p-8">
             <h2 className="text-2xl font-bold text-left text-slate-900">{register ? 'Welcome😊': 'Welcome back 😊'}</h2>
             <p className="mt-1 text-sm text-slate-500">
             {register ? 'Create an account to begin tracking your spending.':' Log in to continue tracking your spending.'

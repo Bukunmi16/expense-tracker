@@ -6,7 +6,7 @@ import AddTransactionDialog from '@/components/AddTransactionDialog'
 import { api } from '@/lib/utils'
 import { toast } from 'sonner'
 import { useAuth } from '@/context/AuthContext'
-import { LogOut, User } from 'lucide-react'
+import { LogOut, User, Wallet } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const Dashboard = () => {
@@ -95,10 +95,18 @@ const Dashboard = () => {
   }, [page])
 
   return (
-    <main>
-        <div className='p-3 md:p-6 shadow  mx-auto flex justify-between items-center '>
-        <div className='font-bold text-md sm:text-3xl'>Expense Tracker</div>
-        
+    <main className='flex flex-col'>
+        <div className='p-3 md:p-6 shadow w-full mx-auto flex justify-between items-center '>
+        <div className='flex gap-3 items-center'>
+        <div className='font-bold text-md sm:text-3xl hidden md:block'>Expense Tracker</div>
+            <div className="cursor-pointer inline-flex items-center gap-2 rounded-full border bg-card px-3 py-1.5 shadow-sm">
+      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-medium">
+        {user.name?.charAt(0).toUpperCase()}
+      </div>
+      <span className="text-sm font-medium">{user.name}</span>
+    </div>
+        </div>
+
         <div className='flex gap-2'>
 
         <AddTransactionDialog 
@@ -113,8 +121,10 @@ const Dashboard = () => {
 
       <Button variant="ghost" onClick={handleLogout}><LogOut className="h-4 w-4" /><p className='md:block hidden'>Logout</p></Button>
         </div>
-
         </div>
+    
+
+    
         <SummaryCards 
         summary={summary}
         loadingSummary={isLoadingSummary}
