@@ -1,5 +1,5 @@
 import React from 'react'
-import { Route, Routes } from 'react-router'
+import { Navigate, Route, Routes } from 'react-router'
 import { Toaster } from 'sonner'
 import Dashboard from './pages/Dashboard'
 import AuthPage from './pages/AuthPage'
